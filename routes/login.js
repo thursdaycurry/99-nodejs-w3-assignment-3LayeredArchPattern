@@ -11,7 +11,7 @@ router.post('/login', async (req, res) => {
   try {
     const { nickname, password } = req.body;
 
-    // TODO DB 내 등록된 닉네임 확인 : UserInfos의 키값을 비교하는 것으로 변경
+    // DB 내 등록된 닉네임 확인 : UserInfos의 키값을 비교하는 것으로 변경
     const result = await Users.findOne({ where: { name: nickname } });
 
     // DB 내 등록된 닉네임 없는 경우 -> 400
