@@ -11,31 +11,32 @@ class PostRepository {
 
   findPostById = async (postId) => {
     const post = await Posts.findByPk(postId);
-
     return post;
   };
 
-  createPost = async (nickname, password, title, content) => {
-    const createPostData = await Posts.create({
-      nickname,
-      password,
-      title,
-      content,
-    });
-
-    return createPostData;
+  createPost = async (title, content) => {
+    try {
+      await Posts.create({
+        UserId: '1',
+        title: title,
+        content: content,
+      });
+    } catch (error) {
+      console.log(`🧚🏼‍♀️ error: ${error}`);
+    }
   };
 
-  updatePost = async (postId, password, title, content) => {
-    const updatePostData = await Posts.update({ title, content }, { where: { postId, password } });
+  updatePost = async (postId, title, content) => {
+    await Posts.update({ title, content }, { where: { postId } });
 
-    return updatePostData;
+    // const updatePostData = await Posts.update({ title, content }, { where: { postId } });
+    // return updatePostData;
   };
 
-  deletePost = async (postId, password) => {
-    const updatePostData = await Posts.destroy({ where: { postId, password } });
+  deletePost = async (postId) => {
+    const updatePostData = await Posts.destroy({ where: { postId } });
 
-    return updatePostData;
+    // return updatePostData;
   };
 }
 

@@ -1,6 +1,6 @@
 // services/posts.services.js
 
-const PostRepository = require('../repositories/posts.repository');
+const PostRepository = require('../repositories/posts.repository.js');
 
 class PostService {
   postRepository = new PostRepository();
@@ -36,35 +36,36 @@ class PostService {
     };
   };
 
-  createPost = async (nickname, password, title, content) => {
-    const createPostData = await this.postRepository.createPost(nickname, password, title, content);
+  createPost = async (title, content) => {
+    await this.postRepository.createPost(title, content);
+    // const createPostData = await this.postRepository.createPost(title, content);
 
-    return {
-      postId: createPostData.null,
-      nickname: createPostData.nickname,
-      title: createPostData.title,
-      content: createPostData.content,
-      createdAt: createPostData.createdAt,
-      updatedAt: createPostData.updatedAt,
-    };
+    // return {
+    //   postId: createPostData.null,
+    //   nickname: createPostData.nickname,
+    //   title: createPostData.title,
+    //   content: createPostData.content,
+    //   createdAt: createPostData.createdAt,
+    //   updatedAt: createPostData.updatedAt,
+    // };
   };
 
   updatePost = async (postId, password, title, content) => {
     const findPost = await this.postRepository.findPostById(postId);
     if (!findPost) throw new Error("Post doesn't exist");
 
-    await this.postRepository.updatePost(postId, password, title, content);
+    await this.postRepository.updatePost(postId, title, content);
 
-    const updatePost = await this.postRepository.findPostById(postId);
+    // const updatePost = await this.postRepository.findPostById(postId);
 
-    return {
-      postId: updatePost.postId,
-      nickname: updatePost.nickname,
-      title: updatePost.title,
-      content: updatePost.content,
-      createdAt: updatePost.createdAt,
-      updatedAt: updatePost.updatedAt,
-    };
+    // return {
+    //   postId: updatePost.postId,
+    //   nickname: updatePost.nickname,
+    //   title: updatePost.title,
+    //   content: updatePost.content,
+    //   createdAt: updatePost.createdAt,
+    //   updatedAt: updatePost.updatedAt,
+    // };
   };
 
   deletePost = async (postId, password) => {
@@ -73,14 +74,14 @@ class PostService {
 
     await this.postRepository.deletePost(postId, password);
 
-    return {
-      postId: findPost.postId,
-      nickname: findPost.nickname,
-      title: findPost.title,
-      content: findPost.content,
-      createdAt: findPost.createdAt,
-      updatedAt: findPost.updatedAt,
-    };
+    // return {
+    //   postId: findPost.postId,
+    //   nickname: findPost.nickname,
+    //   title: findPost.title,
+    //   content: findPost.content,
+    //   createdAt: findPost.createdAt,
+    //   updatedAt: findPost.updatedAt,
+    // };
   };
 }
 
