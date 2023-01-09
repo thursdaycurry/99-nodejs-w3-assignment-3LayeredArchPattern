@@ -1,4 +1,4 @@
-// controllers/posts.controller.js
+// Controller -> Service
 
 // todo JWT
 
