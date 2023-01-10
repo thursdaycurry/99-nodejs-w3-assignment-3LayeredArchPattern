@@ -1,27 +1,20 @@
 // services/posts.services.js
 
 const PostRepository = require('../repositories/posts.repository.js');
+const ValidateText = require('../helper/validate.text.js');
 
 class PostService {
   postRepository = new PostRepository();
+  validateText = new ValidateText();
 
   findAllPost = async () => {
     const allPost = await this.postRepository.findAllPost();
-
     return allPost;
   };
 
   findPostById = async (postId) => {
     const findPost = await this.postRepository.findPostById(postId);
-
-    return {
-      postId: findPost.postId,
-      nickname: findPost.nickname,
-      title: findPost.title,
-      content: findPost.content,
-      createdAt: findPost.createdAt,
-      updatedAt: findPost.updatedAt,
-    };
+    return findPost;
   };
 
   createPost = async (title, content) => {
@@ -38,38 +31,17 @@ class PostService {
     // };
   };
 
-  updatePost = async (postId, password, title, content) => {
+  updatePost = async (postId, title, content) => {
     const findPost = await this.postRepository.findPostById(postId);
     if (!findPost) throw new Error("Post doesn't exist");
-
     await this.postRepository.updatePost(postId, title, content);
-
-    // const updatePost = await this.postRepository.findPostById(postId);
-
-    // return {
-    //   postId: updatePost.postId,
-    //   nickname: updatePost.nickname,
-    //   title: updatePost.title,
-    //   content: updatePost.content,
-    //   createdAt: updatePost.createdAt,
-    //   updatedAt: updatePost.updatedAt,
-    // };
   };
 
   deletePost = async (postId, password) => {
     const findPost = await this.postRepository.findPostById(postId);
     if (!findPost) throw new Error("Post doesn't exist");
 
-    await this.postRepository.deletePost(postId, password);
-
-    // return {
-    //   postId: findPost.postId,
-    //   nickname: findPost.nickname,
-    //   title: findPost.title,
-    //   content: findPost.content,
-    //   createdAt: findPost.createdAt,
-    //   updatedAt: findPost.updatedAt,
-    // };
+    await this.postRepository.deletePost(postId);
   };
 }
 

@@ -19,6 +19,7 @@ class PostRepository {
         (select count(l.isLiked) from Likes l where l.postId = p.postId) as likes 
       FROM Posts p 
       INNER JOIN Users u ON p.UserId = u.userId
+      ORDER BY p.createdAt DESC
     `);
     return result;
   };
@@ -41,16 +42,11 @@ class PostRepository {
   };
 
   updatePost = async (postId, title, content) => {
-    await Posts.update({ title, content }, { where: { postId } });
-
-    // const updatePostData = await Posts.update({ title, content }, { where: { postId } });
-    // return updatePostData;
+    await Posts.update({ title, content }, { where: { postId: postId } });
   };
 
   deletePost = async (postId) => {
-    const updatePostData = await Posts.destroy({ where: { postId } });
-
-    // return updatePostData;
+    await Posts.destroy({ where: { postId } });
   };
 }
 

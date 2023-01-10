@@ -16,16 +16,17 @@ class LoginController {
       console.log(`🧚🏼‍♀️ accessToken: ${accessToken}`);
       console.log(`🧚🏼‍♀️ refreshToken: ${refreshToken}`);
 
+      // Todo 매번 refreshToken 재발급 해야하나?
       if (isTokenCreated) {
         res.cookie('authorization', 'Bearer ' + accessToken);
         res.cookie('refreshToken', refreshToken);
-        console.log('토큰 정상 발급 완료');
         console.log(`🐞authorization : Bearer ${accessToken}`);
+        console.log('토큰 정상 발급 완료');
       }
 
       // # 412 해당하는 유저가 존재하지 않는 경우
       // {"errorMessage": "닉네임 또는 패스워드를 확인해주세요."}
-      res.status(200).json({
+      return res.status(200).json({
         message: '로그인 성공',
         token: `Bearer ${accessToken}`,
       });
