@@ -8,19 +8,7 @@ class PostService {
   findAllPost = async () => {
     const allPost = await this.postRepository.findAllPost();
 
-    allPost.sort((a, b) => {
-      return b.createdAt - a.createdAt;
-    });
-
-    return allPost.map((post) => {
-      return {
-        postId: post.postId,
-        nickname: post.nickname,
-        title: post.title,
-        createdAt: post.createdAt,
-        updatedAt: post.updatedAt,
-      };
-    });
+    return allPost;
   };
 
   findPostById = async (postId) => {

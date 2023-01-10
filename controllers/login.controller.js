@@ -17,10 +17,10 @@ class LoginController {
       console.log(`🧚🏼‍♀️ refreshToken: ${refreshToken}`);
 
       if (isTokenCreated) {
-        console.log('토큰 정상 발급 완료');
-        console.log(`🐞authorization : Bearer ${accessToken}`);
         res.cookie('authorization', 'Bearer ' + accessToken);
         res.cookie('refreshToken', refreshToken);
+        console.log('토큰 정상 발급 완료');
+        console.log(`🐞authorization : Bearer ${accessToken}`);
       }
 
       // # 412 해당하는 유저가 존재하지 않는 경우

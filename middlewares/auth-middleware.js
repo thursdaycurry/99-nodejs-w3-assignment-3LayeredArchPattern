@@ -26,7 +26,7 @@ module.exports = async (req, res, next) => {
     console.log(`🧆🧆 nickname: ${nickname}`);
     const nicknameAtServer = await Users.findOne({ where: { name: nickname } });
 
-    res.locals.user = nicknameAtServer['dataValues']['name'];
+    res.locals.nickename = nicknameAtServer['dataValues']['name'];
     res.locals.userId = nicknameAtServer['dataValues']['userId'];
 
     console.log(`🧆🧆 당신은 글을 써도 됩니다. ${res.locals.user}님`);

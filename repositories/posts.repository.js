@@ -1,12 +1,26 @@
 // repositories/posts.repository.js
 
-const { Posts } = require('../models');
+const { Posts, sequelize } = require('../models');
 
 class PostRepository {
   findAllPost = async () => {
-    const posts = await Posts.findAll();
+    // const posts = await Posts.findAll();
 
-    return posts;
+    // return posts;
+
+    const [result, metadata] = await sequelize.query(`
+      SELECT 
+        p.postId, 
+        p.UserId, 
+        u.name as nickname, 
+        p.title, 
+        p.createdAt, 
+        p.updatedAt, 
+        (select count(l.isLiked) from Likes l where l.postId = p.postId) as likes 
+      FROM Posts p 
+      INNER JOIN Users u ON p.UserId = u.userId
+    `);
+    return result;
   };
 
   findPostById = async (postId) => {
