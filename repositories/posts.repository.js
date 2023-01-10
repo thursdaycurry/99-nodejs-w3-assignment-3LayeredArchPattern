@@ -1,4 +1,4 @@
-// repositories/posts.repository.js
+//Repository <-> DB
 
 const { Posts, sequelize } = require('../models');
 

@@ -1,4 +1,4 @@
-// services/posts.services.js
+// Service -> Repository
 
 const PostRepository = require('../repositories/posts.repository.js');
 const ValidateText = require('../helper/validate.text.js');
@@ -8,27 +8,15 @@ class PostService {
   validateText = new ValidateText();
 
   findAllPost = async () => {
-    const allPost = await this.postRepository.findAllPost();
-    return allPost;
+    return await this.postRepository.findAllPost();
   };
 
   findPostById = async (postId) => {
-    const findPost = await this.postRepository.findPostById(postId);
-    return findPost;
+    return await this.postRepository.findPostById(postId);
   };
 
   createPost = async (title, content) => {
     await this.postRepository.createPost(title, content);
-    // const createPostData = await this.postRepository.createPost(title, content);
-
-    // return {
-    //   postId: createPostData.null,
-    //   nickname: createPostData.nickname,
-    //   title: createPostData.title,
-    //   content: createPostData.content,
-    //   createdAt: createPostData.createdAt,
-    //   updatedAt: createPostData.updatedAt,
-    // };
   };
 
   updatePost = async (postId, title, content) => {
@@ -40,7 +28,6 @@ class PostService {
   deletePost = async (postId, password) => {
     const findPost = await this.postRepository.findPostById(postId);
     if (!findPost) throw new Error("Post doesn't exist");
-
     await this.postRepository.deletePost(postId);
   };
 }
