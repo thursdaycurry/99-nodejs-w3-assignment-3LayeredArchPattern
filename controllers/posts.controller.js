@@ -38,7 +38,8 @@ class PostsController {
 
       // 게시글 생성
       if (content && content) {
-        await this.postService.createPost(title, content);
+        const userId = res.locals.userId;
+        await this.postService.createPost(userId, title, content);
         return res.status(201).json({ message: '게시글 작성에 성공하였습니다.' });
       }
     } catch (error) {
@@ -63,11 +64,9 @@ class PostsController {
       const post = await this.postService.findPostById(postId);
       if (!post) return res.status(404).json({ errorMessage: '게시글이 존재하지 않습니다.' });
 
-      // todo 게시글 작성자와 유저가 동일한 경우 체크
-      // 유저 아이디
+      // 게시글 작성자와 유저가 동일한 경우 체크
+
       const valResult = await this.postService.isThisGuyPostOwner(postId, res.locals.userId);
-      console.log(`🧚🏼‍♀️res.locals.userId: ${res.locals.userId}`);
-      console.log(`valResult: ${valResult}`);
 
       await this.postService.updatePost(postId, title, content);
       return res.status(200).json({ message: `게시글을 성공적으로 수정했습니다.` });

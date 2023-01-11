@@ -28,6 +28,10 @@ class LoginService {
     // 클라이언트 jwt 토큰 controller로 전달
     return result;
   };
+
+  deleteRefreshToken = async (refreshToken) => {
+    await this.loginRepository.deleteRefreshToken(refreshToken);
+  };
 }
 
 module.exports = LoginService;

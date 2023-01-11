@@ -15,7 +15,7 @@ class LoginRepository {
 
   createAccessToken = (nickname) => {
     const accessToken = jwt.sign({ nickname: nickname }, SECRET_KEY, {
-      expiresIn: '15s',
+      expiresIn: '600s',
     });
     return accessToken;
   };
@@ -23,6 +23,10 @@ class LoginRepository {
   createRefreshToken = () => {
     const refreshToken = jwt.sign({}, SECRET_KEY, { expiresIn: '1d' });
     return refreshToken;
+  };
+
+  deleteRefreshToken = async (refreshToken) => {
+    await UserInfos.destroy({ where: { refreshToken } });
   };
 
   storeToken = (refreshToken, nickname) => {

@@ -15,6 +15,7 @@ const router = require('./routes');
 
 app.use(cookieParser());
 app.use(express.json());
+
 app.use('/api', router);
 
 app.listen(port, () => {

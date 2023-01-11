@@ -25,27 +25,12 @@ class PostRepository {
   };
 
   findUserIdById = async (postId) => {
-    // const [result, metadata] = await sequelize.query(`
-    // SELECT *
-    // FROM Posts p
-    // WHERE postId = ${postId}
-    // `);
-
     const result = await Posts.findOne({ where: { postId: postId } });
-
     return result;
   };
 
-  createPost = async (title, content) => {
-    try {
-      await Posts.create({
-        UserId: '1',
-        title: title,
-        content: content,
-      });
-    } catch (error) {
-      console.log(`🧚🏼‍♀️ error: ${error}`);
-    }
+  createPost = async (userId, title, content) => {
+    await Posts.create({ UserId: userId, title: title, content: content });
   };
 
   updatePost = async (postId, title, content) => {

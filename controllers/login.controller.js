@@ -8,32 +8,37 @@ class LoginController {
   login = async (req, res, next) => {
     try {
       const { nickname, password } = req.body;
-
-      // check validateId
+      const prevRefreshToken = req.cookies['refreshToken'];
       const { isTokenCreated, accessToken, refreshToken } = await this.loginService.isLoginPossible(nickname, password);
 
-      console.log(`💇‍♀️ nickname: ${nickname}`);
-      console.log(`🧚🏼‍♀️ isTokenCreated: ${isTokenCreated}`);
-      console.log(`🧚🏼‍♀️ accessToken: ${accessToken}`);
-      console.log(`🧚🏼‍♀️ refreshToken: ${refreshToken}`);
-
-      // Todo 매번 refreshToken 재발급 해야하나?
+      // 로그인 성공 - 토큰 발급
       if (isTokenCreated) {
-        res.cookie('authorization', 'Bearer ' + accessToken);
+        const authorization = 'Bearer ' + accessToken;
+        res.cookie('authorization', authorization);
         res.cookie('refreshToken', refreshToken);
-        console.log(`🐞authorization : Bearer ${accessToken}`);
-        console.log('토큰 정상 발급 완료');
+
+        // 기존 RefreshToken 삭제
+        await this.loginService.deleteRefreshToken(prevRefreshToken);
+
+        console.log(`🐞토큰 정상 발급 완료 -> authorization : Bearer ${accessToken}`);
+        return res.status(200).json({ message: '로그인 성공', token: `Bearer ${accessToken}` });
       }
 
-      // # 412 해당하는 유저가 존재하지 않는 경우
-      // {"errorMessage": "닉네임 또는 패스워드를 확인해주세요."}
-      return res.status(200).json({
-        message: '로그인 성공',
-        token: `Bearer ${accessToken}`,
-      });
-    } catch (error) {
-      // # 400 예외 케이스에서 처리하지 못한 에러
+      // 로그인 실패
       return res.status(400).json({ errorMessage: `${error}` });
+    } catch (error) {
+      return res.status(400).json({ errorMessage: `${error}` });
+    }
+  };
+
+  logout = async (req, res, next) => {
+    try {
+      // 리프레시 토큰 삭제
+      const { refreshToken } = req.cookies;
+      await this.loginService.deleteRefreshToken(refreshToken);
+      return res.status(200).json({ message: '로그아웃이 정상적으로 완료되었습니다. 👋' });
+    } catch (error) {
+      return res.status(400).json({ errorMessage: `로그아웃 실패!` });
     }
   };
 }

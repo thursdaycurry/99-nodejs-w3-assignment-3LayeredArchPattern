@@ -7,17 +7,19 @@ class SignupController {
 
   signup = async (req, res, next) => {
     try {
+      // get input
       const { nickname, password, confirm } = req.body;
 
-      const result = await this.signupService.isSignupPossible(nickname, password, confirm);
+      // User Validation
+      const signupResult = await this.signupService.isSignupPossible(nickname, password, confirm);
 
-      if (result) {
+      // Create Account
+      if (signupResult) {
         await this.signupService.signupUser(nickname, password);
-        res.json({ message: '회원 가입에 성공하였습니다.' });
+        res.status(201).json({ message: '회원가입에 성공하였습니다.' });
       }
     } catch (error) {
-      // # 400 예외 케이스에서 처리하지 못한 에러
-      return res.status(400).json({ errorMessage: `${error}` });
+      return res.status(400).json({ errorMessage: `회원가입에 실패했습니다` }); // # 400 예외 케이스에서 처리하지 못한 에러
     }
   };
 }

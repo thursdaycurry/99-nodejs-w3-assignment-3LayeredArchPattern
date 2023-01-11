@@ -25,8 +25,8 @@ class PostService {
     return clientUserId === postOwnerUserId['UserId'] ? true : false;
   };
 
-  createPost = async (title, content) => {
-    await this.postRepository.createPost(title, content);
+  createPost = async (userId, title, content) => {
+    await this.postRepository.createPost(userId, title, content);
   };
 
   updatePost = async (postId, title, content) => {
