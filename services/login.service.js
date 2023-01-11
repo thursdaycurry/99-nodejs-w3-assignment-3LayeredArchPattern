@@ -13,6 +13,8 @@ class LoginService {
     // params-pw, db-pw 동일한지 체크
     if (password !== userInfo['password']) throw new Error('비밀번호를 다시 확인해주세요');
 
+    console.log(`💇‍♀️ nickname: ${nickname}`);
+
     // jwt 토큰 생성
     const result = {
       isTokenCreated: true,

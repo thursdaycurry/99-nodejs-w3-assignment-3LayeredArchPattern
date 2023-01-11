@@ -4,10 +4,6 @@ const { Posts, sequelize } = require('../models');
 
 class PostRepository {
   findAllPost = async () => {
-    // const posts = await Posts.findAll();
-
-    // return posts;
-
     const [result, metadata] = await sequelize.query(`
       SELECT 
         p.postId, 
@@ -25,8 +21,19 @@ class PostRepository {
   };
 
   findPostById = async (postId) => {
-    const post = await Posts.findByPk(postId);
-    return post;
+    return await Posts.findByPk(postId);
+  };
+
+  findUserIdById = async (postId) => {
+    // const [result, metadata] = await sequelize.query(`
+    // SELECT *
+    // FROM Posts p
+    // WHERE postId = ${postId}
+    // `);
+
+    const result = await Posts.findOne({ where: { postId: postId } });
+
+    return result;
   };
 
   createPost = async (title, content) => {

@@ -15,7 +15,7 @@ class LoginRepository {
 
   createAccessToken = (nickname) => {
     const accessToken = jwt.sign({ nickname: nickname }, SECRET_KEY, {
-      expiresIn: '600s',
+      expiresIn: '15s',
     });
     return accessToken;
   };

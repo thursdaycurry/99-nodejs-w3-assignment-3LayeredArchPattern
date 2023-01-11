@@ -15,6 +15,16 @@ class PostService {
     return await this.postRepository.findPostById(postId);
   };
 
+  isThisGuyPostOwner = async (postId, userId) => {
+    const clientUserId = userId;
+    const postOwnerUserId = await this.postRepository.findUserIdById(postId);
+
+    console.log(`🛒clientUserId: ${clientUserId}`);
+    console.log(`🛒postOwnerUserId: ${postOwnerUserId['UserId']}`);
+
+    return clientUserId === postOwnerUserId['UserId'] ? true : false;
+  };
+
   createPost = async (title, content) => {
     await this.postRepository.createPost(title, content);
   };

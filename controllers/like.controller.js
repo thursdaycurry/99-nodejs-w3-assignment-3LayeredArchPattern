@@ -10,6 +10,9 @@ class LikeController {
       const { postId } = req.params;
       const userId = res.locals.userId;
 
+      console.log(`🧡res.locals.userId: ${res.locals.userId}`);
+      console.log(`🧡res.locals.nickname: ${res.locals.nickname}`);
+
       // postId 게시글 존재 여부 확인
       const postToLike = await this.likeService.findPostByPostId(postId);
 

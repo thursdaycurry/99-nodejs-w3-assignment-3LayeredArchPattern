@@ -22,9 +22,7 @@ class PostsController {
     try {
       const { postId } = req.params;
       const post = await this.postService.findPostById(postId);
-      if (post) {
-        return res.status(200).json({ data: post });
-      }
+      if (post) return res.status(200).json({ data: post });
     } catch (error) {
       return res.status(200).json({ errorMessage: '게시글 조회에 실패하였습니다.' }); // # 400 예외 케이스에서 처리하지 못한 에러
     }
@@ -53,6 +51,9 @@ class PostsController {
       const { postId } = req.params;
       const { title, content } = req.body;
 
+      console.log(`🧡res.locals.userId: ${res.locals.userId}`);
+      console.log(`🧡res.locals.nickname: ${res.locals.nickname}`);
+
       this.validateForm.body(req.body); // # 412 body 데이터가 정상적으로 전달되지 않는 경우
       this.validateForm.title(title); // # 412 Title의 형식이 비정상적인 경우
       this.validateForm.content(content); // # 412 Content의 형식이 비정상적인 경우
@@ -63,6 +64,10 @@ class PostsController {
       if (!post) return res.status(404).json({ errorMessage: '게시글이 존재하지 않습니다.' });
 
       // todo 게시글 작성자와 유저가 동일한 경우 체크
+      // 유저 아이디
+      const valResult = await this.postService.isThisGuyPostOwner(postId, res.locals.userId);
+      console.log(`🧚🏼‍♀️res.locals.userId: ${res.locals.userId}`);
+      console.log(`valResult: ${valResult}`);
 
       await this.postService.updatePost(postId, title, content);
       return res.status(200).json({ message: `게시글을 성공적으로 수정했습니다.` });
