@@ -18,23 +18,24 @@ module.exports = async (req, res, next) => {
 
     if (!isRefreshTokenValidate) return res.status(419).json({ message: 'Refresh Token이 만료되었습니다' });
 
-    // Refresh Token : O
-    // Access token : X -> give new one
+    // Refresh Token : O /  Access token : X -> give new one
     if (!isAccessTokenValidate) {
       const accessTokenId = await UserInfos.findOne({ where: { refreshToken } });
-      console.log(`🐞accessTokenId['nickname']: ${accessTokenId['nickname']}`);
-      if (!accessTokenId) return res.status(419).json({ message: '서버에 없는 Refresh Token 존재하지 않습니다.' });
-
+      if (!accessTokenId) {
+        return res.status(419).json({ message: '서버에 없는 Refresh Token 존재하지 않습니다.' });
+      }
       const newAccessToken = manageJWT.createAccessToken(accessTokenId['nickname']);
       res.cookie('accessToken', newAccessToken);
       console.log(`Middleware🧚🏼‍♀️) Access Token을 새롭게 발급했습니다.${newAccessToken}`);
     }
 
-    // Refresh Token : O
-    // Access Token : O
-    const { userId } = manageJWT.getAccessTokenPayload(accessToken);
+    // Refresh Token : O / Access Token : O
+    const { userId } = await manageJWT.getAccessTokenPayload(accessToken);
     console.log(`😀userId: ${userId}`);
-    res.locals.userId = userId;
+    res.locals.nickname = userId;
+
+    const userIdInServer = await Users.findOne({ where: { name: userId } });
+    res.locals.userId = userIdInServer['userId'];
 
     console.log(`Middleware🧚🏼‍♀️) ${userId}님, access&refresh Token 모두 양호합니다.`);
   } catch (error) {

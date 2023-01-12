@@ -7,7 +7,6 @@ class CommentService {
 
   findAllComment = async (postId) => {
     const allComment = await this.commentRepository.findAllComment(postId);
-
     return allComment;
   };
 
