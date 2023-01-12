@@ -8,6 +8,7 @@ class SignupController {
   signup = async (req, res, next) => {
     try {
       const { nickname, password, confirm } = req.body;
+      if (!nickname || !password || !confirm) return res.status(400).json({ errorMessage: `회원정보를 입력해주세요` });
 
       const signupResult = await this.signupService.isSignupPossible(nickname, password, confirm);
 
