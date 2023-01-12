@@ -18,17 +18,18 @@ class LikeService {
 
     console.log(`🧡like: ${JSON.stringify(like)}`);
     // 좋아요 처음 누르는 경우
-    if (!like) await this.likeRepository.createLike(postId, userId);
+    if (!like) {
+      await this.likeRepository.createLike(postId, userId);
+      return '좋아요 생성했습니다';
+    }
 
     if (like['isLiked']) {
       await this.likeRepository.likeDown(postId, userId);
-      message = '좋아요를 취소했습니다';
+      return '좋아요를 취소했습니다';
     } else {
       await this.likeRepository.likeUp(postId, userId);
-      message = '좋아요를 생성했습니다';
+      return '좋아요를 생성했습니다';
     }
-
-    return message;
   };
 
   findLikedPosts = async (userId) => {

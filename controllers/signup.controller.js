@@ -7,10 +7,8 @@ class SignupController {
 
   signup = async (req, res, next) => {
     try {
-      // get input
       const { nickname, password, confirm } = req.body;
 
-      // User Validation
       const signupResult = await this.signupService.isSignupPossible(nickname, password, confirm);
 
       // Create Account

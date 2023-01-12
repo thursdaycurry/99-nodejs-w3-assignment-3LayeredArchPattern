@@ -9,47 +9,24 @@ class CommentService {
     const allComment = await this.commentRepository.findAllComment(postId);
 
     return allComment;
-    // allComment.sort((a, b) => {
-    //   return b.createdAt - a.createdAt;
-    // });
-
-    // return allComment.map((post) => {
-    //   return {
-    //     postId: post.postId,
-    //     nickname: post.nickname,
-    //     title: post.title,
-    //     createdAt: post.createdAt,
-    //     updatedAt: post.updatedAt,
-    //   };
-    // });
   };
 
-  // findPostById = async (postId) => {
-  //   const findPost = await this.commentRepository.findPostById(postId);
+  isThisGuyCommentOwner = async (commentId, userId) => {
+    const clientUserId = userId;
+    const commentOwnerUserId = await this.commentRepository.findUserIdByCommentId(commentId);
 
-  //   return {
-  //     postId: findPost.postId,
-  //     nickname: findPost.nickname,
-  //     title: findPost.title,
-  //     content: findPost.content,
-  //     createdAt: findPost.createdAt,
-  //     updatedAt: findPost.updatedAt,
-  //   };
-  // };
+    if (!commentOwnerUserId) {
+      throw new Error('400, 해당 댓글을 찾을 수가 없습니다.');
+    }
 
-  createComment = async (postId, comment) => {
-    await this.commentRepository.createComment(postId, comment);
+    console.log(`🛒clientUserId: ${clientUserId}`);
+    console.log(`commentOwnerUserId: ${commentOwnerUserId['UserId']}`);
 
-    // const createPostData = await this.commentRepository.createPost(title, content);
+    return clientUserId === commentOwnerUserId['UserId'] ? true : false;
+  };
 
-    // return {
-    //   postId: createPostData.null,
-    //   nickname: createPostData.nickname,
-    //   title: createPostData.title,
-    //   content: createPostData.content,
-    //   createdAt: createPostData.createdAt,
-    //   updatedAt: createPostData.updatedAt,
-    // };
+  createComment = async (userId, postId, comment) => {
+    await this.commentRepository.createComment(userId, postId, comment);
   };
 
   updateComment = async (commentId, comment) => {

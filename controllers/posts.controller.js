@@ -14,7 +14,7 @@ class PostsController {
       const posts = await this.postService.findAllPost();
       return res.status(200).json({ data: posts });
     } catch (error) {
-      return res.status(200).json({ errorMessage: '게시글 조회에 실패하였습니다.' }); // # 400 예외 케이스에서 처리하지 못한 에러
+      return res.status(400).json({ errorMessage: '게시글 조회에 실패하였습니다.' }); // # 400 예외 케이스에서 처리하지 못한 에러
     }
   };
 
@@ -22,9 +22,12 @@ class PostsController {
     try {
       const { postId } = req.params;
       const post = await this.postService.findPostById(postId);
-      if (post) return res.status(200).json({ data: post });
+      if (post) {
+        return res.status(200).json({ data: post });
+      }
+      return res.status(400).json({ errorMessage: '게시글 조회에 실패하였습니다.' }); // # 400 예외 케이스에서 처리하지 못한 에러
     } catch (error) {
-      return res.status(200).json({ errorMessage: '게시글 조회에 실패하였습니다.' }); // # 400 예외 케이스에서 처리하지 못한 에러
+      return res.status(400).json({ errorMessage: '게시글 조회에 실패하였습니다.' }); // # 400 예외 케이스에서 처리하지 못한 에러
     }
   };
 
@@ -36,6 +39,9 @@ class PostsController {
       this.validateForm.content(content); // # 412 Content의 형식이 비정상적인 경우
       this.validateText.validatePost(title, content); // # 412 title, content 5자 미만일 경우
 
+      console.log('🐞');
+      console.log('🐞');
+      console.log('🐞');
       // 게시글 생성
       if (content && content) {
         const userId = res.locals.userId;
@@ -43,12 +49,14 @@ class PostsController {
         return res.status(201).json({ message: '게시글 작성에 성공하였습니다.' });
       }
     } catch (error) {
+      console.log(error);
       return res.status(400).json({ errorMessage: '게시글 작성에 실패하였습니다.' }); // # 400 예외 케이스에서 처리하지 못한 에러
     }
   };
 
   updatePost = async (req, res, next) => {
     try {
+      console.log('helooooooo');
       const { postId } = req.params;
       const { title, content } = req.body;
 
@@ -65,7 +73,6 @@ class PostsController {
       if (!post) return res.status(404).json({ errorMessage: '게시글이 존재하지 않습니다.' });
 
       // 게시글 작성자와 유저가 동일한 경우 체크
-
       const valResult = await this.postService.isThisGuyPostOwner(postId, res.locals.userId);
 
       await this.postService.updatePost(postId, title, content);

@@ -3,9 +3,12 @@
 const CommentService = require('../services/comments.service');
 const PostService = require('../services/posts.service');
 
+const ValidateForm = require('../helper/validate.form.js');
+
 class CommentsController {
   commentService = new CommentService();
   postService = new PostService();
+  validateForm = new ValidateForm();
 
   // * READ all comments of the post
   // - core func
@@ -20,22 +23,19 @@ class CommentsController {
     try {
       const { postId } = req.params;
       const { comment } = req.body;
+      const userId = res.locals.userId;
 
-      // # 412 body 데이터가 정상적으로 전달되지 않는 경우
-      if (Object.keys(req.body).length === 0) return res.status(400).json({ errorMessage: '데이터 형식이 올바르지 않습니다.' });
+      this.validateForm.body(req.body);
+      this.validateForm.content(comment);
 
-      // # 412 comment의 형식이 비정상적인 경우
-      if (!comment) return res.status(400).json({ errorMessage: '댓글의 형식이 일치하지 않습니다.' });
-
-      // # 404 게시글이 없는 경우
       const post = await this.postService.findPostById(postId);
-      if (!post) return res.status(404).json({ errorMessage: '게시글이 존재하지 않습니다.' });
 
-      await this.commentService.createComment(postId, comment);
-
-      res.status(201).json({ message: '댓글 작성에 성공하였습니다.' });
+      if (post) {
+        await this.commentService.createComment(userId, postId, comment);
+        return res.status(201).json({ message: '댓글 작성에 성공하였습니다.' });
+      }
+      return res.status(404).json({ errorMessage: '게시글이 존재하지 않습니다.' });
     } catch (error) {
-      // # 400 예외 케이스에서 처리하지 못한 에러
       return res.status(400).json({ errorMessage: '댓글 생성에 실패했습니다' });
     }
   };
@@ -46,34 +46,40 @@ class CommentsController {
       const { commentId } = req.params;
       const { comment } = req.body;
 
-      // # 412 body 데이터가 정상적으로 전달되지 않는 경우
-      if (Object.keys(req.body).length === 0) return res.status(400).json({ errorMessage: '데이터 형식이 올바르지 않습니다.' });
+      this.validateForm.content(comment);
 
-      // # 412 comment의 형식이 비정상적인 경우
-      if (!comment) return res.status(400).json({ errorMessage: '댓글의 형식이 일치하지 않습니다.' });
+      const valResult = await this.commentService.isThisGuyCommentOwner(commentId, res.locals.userId);
 
-      // # 404 게시글이 없는 경우
-      const post = await this.postService.findPostById(postId);
-      if (!post) return res.status(404).json({ errorMessage: '게시글이 존재하지 않습니다.' });
+      if (valResult) {
+        await this.commentService.updateComment(commentId, comment);
+        return res.status(200).json({ message: '댓글을 수정했습니다.' });
+      }
 
-      // todo 현재 유저와 댓글 작성자가 동일한지 확인
-
-      await this.commentService.updateComment(commentId, comment);
-      return res.status(200).json({ message: '댓글을 수정했습니다.' });
+      return res.status(404).json({ errorMessage: '당신의 댓글만 수정할 수 있습니다.' });
     } catch (error) {
-      // # 400 예외 케이스에서 처리하지 못한 에러
-      return res.status(400).json({ errorMessage: '댓글 생성에 실패했습니다' });
+      return res.status(400).json({ errorMessage: '댓글 수정에 실패했습니다' });
     }
   };
 
   // * DELETE comment
 
   deleteComment = async (req, res, next) => {
-    const { commentId } = req.params;
+    try {
+      const { commentId } = req.params;
+      const userId = res.locals.userId;
+      console.log(`🪙 commentId: ${commentId}`);
+      console.log(`🪙 userId: ${userId}`);
+      const valResult = await this.commentService.isThisGuyCommentOwner(commentId, userId);
 
-    await this.commentService.deleteComment(commentId);
-
-    res.status(200).json({ message: '댓글을 삭제했습니다.' });
+      if (valResult) {
+        await this.commentService.deleteComment(commentId);
+        return res.status(200).json({ message: '댓글을 삭제했습니다.' });
+      }
+      return res.status(404).json({ errorMessage: '당신의 댓글만 삭제할 수 있습니다.' });
+    } catch (error) {
+      // console.log(error);
+      return res.status(400).json({ errorMessage: error.message });
+    }
   };
 }
 

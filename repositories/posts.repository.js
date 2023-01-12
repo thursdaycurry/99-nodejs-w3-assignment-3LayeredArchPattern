@@ -21,7 +21,9 @@ class PostRepository {
   };
 
   findPostById = async (postId) => {
-    return await Posts.findByPk(postId);
+    console.log(`😀postId: `, postId);
+    const result = await Posts.findOne({ where: { postId: postId } });
+    return result;
   };
 
   findUserIdById = async (postId) => {

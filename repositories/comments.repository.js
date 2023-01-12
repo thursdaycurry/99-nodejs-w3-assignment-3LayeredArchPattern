@@ -14,9 +14,14 @@ class CommentRepository {
     return comment;
   };
 
-  createComment = async (postId, comment) => {
+  findUserIdByCommentId = async (commentId) => {
+    const result = await Comments.findOne({ where: { commentId } });
+    return result;
+  };
+
+  createComment = async (userId, postId, comment) => {
     await Comments.create({
-      UserId: '1', // dummy
+      UserId: userId,
       PostId: postId,
       comment: comment,
     });
@@ -24,9 +29,6 @@ class CommentRepository {
 
   updateComment = async (commentId, comment) => {
     await Comments.update({ comment }, { where: { commentId } });
-
-    // const updatePostData = await Posts.update({ title, content }, { where: { postId } });
-    // return updatePostData;
   };
 
   deleteComment = async (commentId) => {
